@@ -3,9 +3,20 @@ const { json } = require('body-parser')
 var app = express()
 app.use(express.json())
 //app.get('/demo', function (req, res) {
-app.get('/product', (req, res)=> {
-//res.send('wanlop')
-res.status(200).json({result:"[GET]"})
+app.get('/product',async (req, res)=> {
+    try {
+        const result = await db.Products.findAll({
+        order: [
+        ["id", "DESC"]
+        ]
+        })
+        res.status(200).json(result)
+        } catch (error) {
+        res.status(500).json({ message: error.message })
+        }
+
+res.status(200).json(result)
+//res.status(200).json({result:"[GET]"})
 })
 app.get('/product/:id', (req, res)=> {
 res.status(200).json({result:`[GET] id: ${req.params.id}`})
@@ -23,7 +34,8 @@ const PORT =process.env.PORT || 3000
 const ENV =process.env.NODE_ENV || 'development'
 app.listen(PORT, ()=>{
 console.log("on PORT "+ PORT)
-//console.log(`on PORT: ${PORT}`)
+//console.log(on PORT: ${PORT})
 console.log(`on ENV: ${ENV}`)
 console.log("server in running")
 })
+const db = require('./models')
